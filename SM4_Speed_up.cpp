@@ -53,23 +53,23 @@ void SM4_KeyInit(uint8_t* key, uint32_t* RK) {
     uint32_t k[4];
     uint32_t tmp;
     uint8_t* tmp_ptr8 = (uint8_t*)&tmp;
-    // ³õÊ¼»¯ÃÜÔ¿
+    // åˆå§‹åŒ–å¯†é’¥
     for (int i = 0; i < 4; i++) {
         int j = 4 * i;
         k[i] = (key[j + 0] << 24) | (key[j + 1] << 16) | (key[j + 2] << 8) |
             (key[j + 3]);
         k[i] = k[i] ^ FK[i];
     }
-    // 32ÂÖ±ä»»
+    // 32è½®å˜æ¢
     for (int i = 0; i < 32; i++) {
         tmp = k[1] ^ k[2] ^ k[3] ^ CK[i];
-        // SBox ºĞ±ä»»
+        // SBox ç›’å˜æ¢
         for (int j = 0; j < 4; j++) {
             tmp_ptr8[j] = SBox[tmp_ptr8[j]];
         }
-        // ÏßĞÔ±ä»»
+        // çº¿æ€§å˜æ¢
         RK[i] = k[0] ^ tmp ^ loopleft(tmp, 13) ^ loopleft(tmp, 23);
-        // ÒÆÎ»
+        // ç§»ä½
         k[0] = k[1];
         k[1] = k[2];
         k[2] = k[3];
@@ -109,7 +109,7 @@ __m128i MulMatrixTA(__m128i x) {
 __m128i SM4_SBox(__m128i x) {
     __m128i MASK = _mm_set_epi8(0x03, 0x06, 0x09, 0x0c, 0x0f, 0x02, 0x05, 0x08,
         0x0b, 0x0e, 0x01, 0x04, 0x07, 0x0a, 0x0d, 0x00);
-    x = _mm_shuffle_epi8(x, MASK);  //ÄæĞĞÒÆÎ»
+    x = _mm_shuffle_epi8(x, MASK);  //é€†è¡Œç§»ä½
 
     __m128i a = _mm_set1_epi8(0b00100011);
     x= _mm_xor_si128(MulMatrixTA(x), a);
@@ -187,7 +187,7 @@ int main() {
     SM4_KeyInit(key, RK);
     SM4_AESNI_Encrypt_x4(P, P, RK);
     
-    cout << "ÃÜÎÄCÎª£º" << endl;
+    cout << "å¯†æ–‡Cä¸ºï¼š" << endl;
     for (int j = 0; j < 4; j++) {
         cout << "\t";
         for (int i = 0; i < 16; i++) {
@@ -196,7 +196,7 @@ int main() {
         cout << endl;
     }
 
-    cout << "½âÃÜºóÃ÷ÎÄÎª£º" << endl;
+    cout << "è§£å¯†åæ˜æ–‡ä¸ºï¼š" << endl;
     SM4_AESNI_Decrypt_x4(P, P, RK);
     // 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
     // 00 00 ... 00
